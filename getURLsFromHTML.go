@@ -27,9 +27,9 @@ func recurseHTMLTree(node *html.Node, parsedURLs []string, rawBaseURL string) []
 	}
 
 	if node.Type == html.ElementNode && node.Data == "a" {
-		for _, attr := range node.Attr {
-			if attr.Key == "href" {
-				href := attr.Val
+		for _, anchor := range node.Attr {
+			if anchor.Key == "href" {
+				href := anchor.Val
 				hrefURL, err := url.Parse(href)
 				if err != nil {
 					break
