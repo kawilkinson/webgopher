@@ -12,6 +12,13 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		cfg.wg.Done()
 	}()
 
+	if cfg.isMaxPagesReached() {
+		cfg.runOnce.Do(func() {
+			fmt.Printf("max pages reached, exiting WebGopher early...\n")
+		})
+		return
+	}
+
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("error trying to parse current URL: %s\n%v\n", rawCurrentURL, err)
@@ -51,19 +58,5 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		cfg.wg.Add(1)
 		fmt.Printf("crawling to next URL: %s...\n", URL)
 		go cfg.crawlPage(URL)
-	}
-}
-
-func (cfg *config) addPageVisit(normalizedURL string) (isFirst bool) {
-	cfg.mu.Lock()
-	defer cfg.mu.Unlock()
-
-	_, visited := cfg.pages[normalizedURL]
-	if visited {
-		cfg.pages[normalizedURL] += 1
-		return false
-	} else {
-		cfg.pages[normalizedURL] = 1
-		return true
 	}
 }
