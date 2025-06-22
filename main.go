@@ -46,8 +46,5 @@ func main() {
 	go cfg.crawlPage(baseURL)
 	cfg.wg.Wait()
 
-	fmt.Println("Here are the counts of all the URLs crawled:")
-	for URL, count := range cfg.pages {
-		fmt.Printf("URL: %s\nCount: %d\n\n", URL, count)
-	}
+	printReport(cfg.pages, baseURL)
 }
